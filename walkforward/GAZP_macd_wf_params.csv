@@ -1,0 +1,11 @@
+window,train_start,train_end,test_start,test_end,params,train_score,test_return_%,test_sharpe,test_maxdd_%
+1,2014-01-01,2016-12-31,2017-01-01,2017-12-31,"{""macd_fast"":17,""macd_slow"":29,""macd_signal"":6,""allowshort"":true}",0.25,-4.51,-0.19,19.2
+2,2015-01-01,2017-12-31,2018-01-01,2018-12-31,"{""macd_fast"":7,""macd_slow"":29,""macd_signal"":10,""allowshort"":true}",0.385,-27.02,-1.175,41.49
+3,2016-01-01,2018-12-31,2019-01-01,2019-12-31,"{""macd_fast"":8,""macd_slow"":36,""macd_signal"":7,""allowshort"":true}",1.007,0.23,0.155,23.52
+4,2017-01-01,2019-12-31,2020-01-01,2020-12-31,"{""macd_fast"":20,""macd_slow"":41,""macd_signal"":8,""allowshort"":false}",1.879,21.95,1.132,15.58
+5,2018-01-01,2020-12-31,2021-01-01,2021-12-31,"{""macd_fast"":10,""macd_slow"":43,""macd_signal"":15,""allowshort"":false}",5.583,25.73,1.524,11.23
+6,2019-01-01,2021-12-31,2022-01-01,2022-12-31,"{""macd_fast"":10,""macd_slow"":43,""macd_signal"":15,""allowshort"":false}",13.012,-4.14,0.091,32.55
+7,2020-01-01,2022-12-31,2023-01-01,2023-12-31,"{""macd_fast"":6,""macd_slow"":35,""macd_signal"":5,""allowshort"":true}",12.547,7.71,0.492,12.27
+8,2021-01-01,2023-12-31,2024-01-01,2024-12-31,"{""macd_fast"":6,""macd_slow"":35,""macd_signal"":5,""allowshort"":true}",6.843,33.97,1.086,14.66
+9,2022-01-01,2024-12-31,2025-01-01,2025-12-31,"{""macd_fast"":6,""macd_slow"":35,""macd_signal"":5,""allowshort"":true}",14.426,40.93,1.027,21.43
+10,2023-01-01,2025-12-31,2026-01-01,2026-04-20,"{""macd_fast"":17,""macd_slow"":34,""macd_signal"":11,""allowshort"":true}",11.868,-0.13,0.056,8.22

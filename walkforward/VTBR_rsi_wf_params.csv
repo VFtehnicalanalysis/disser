@@ -1,0 +1,11 @@
+window,train_start,train_end,test_start,test_end,params,train_score,test_return_%,test_sharpe,test_maxdd_%
+1,2014-01-01,2016-12-31,2017-01-01,2017-12-31,"{""rsi_lower"":38,""rsi_upper"":62,""rsi_window"":19,""allowshort"":true}",4.063,-18.23,-0.865,30.01
+2,2015-01-01,2017-12-31,2018-01-01,2018-12-31,"{""rsi_lower"":10,""rsi_upper"":82,""rsi_window"":11,""allowshort"":true}",2.337,0.0,0.0,0.0
+3,2016-01-01,2018-12-31,2019-01-01,2019-12-31,"{""rsi_lower"":18,""rsi_upper"":73,""rsi_window"":15,""allowshort"":true}",6.326,-23.39,-1.155,28.51
+4,2017-01-01,2019-12-31,2020-01-01,2020-12-31,"{""rsi_lower"":14,""rsi_upper"":72,""rsi_window"":7,""allowshort"":true}",0.946,-3.2,0.072,35.26
+5,2018-01-01,2020-12-31,2021-01-01,2021-12-31,"{""rsi_lower"":16,""rsi_upper"":65,""rsi_window"":19,""allowshort"":true}",4.049,-21.82,-0.253,48.87
+6,2019-01-01,2021-12-31,2022-01-01,2022-12-31,"{""rsi_lower"":32,""rsi_upper"":60,""rsi_window"":14,""allowshort"":false}",6.551,-59.91,-1.16,66.13
+7,2020-01-01,2022-12-31,2023-01-01,2023-12-31,"{""rsi_lower"":18,""rsi_upper"":73,""rsi_window"":15,""allowshort"":true}",12.25,-24.1,-0.155,61.09
+8,2021-01-01,2023-12-31,2024-01-01,2024-12-31,"{""rsi_lower"":19,""rsi_upper"":79,""rsi_window"":17,""allowshort"":true}",2.072,-23.82,-0.812,40.68
+9,2022-01-01,2024-12-31,2025-01-01,2025-12-31,"{""rsi_lower"":14,""rsi_upper"":72,""rsi_window"":7,""allowshort"":true}",1.149,25.19,0.61,28.57
+10,2023-01-01,2025-12-31,2026-01-01,2026-04-20,"{""rsi_lower"":31,""rsi_upper"":61,""rsi_window"":8,""allowshort"":false}",5.081,8.19,2.498,2.55
