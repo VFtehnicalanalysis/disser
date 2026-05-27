@@ -15,7 +15,7 @@
 | `data/` | Котировки OHLCV: дневные и часовые, 10 тикеров + IMOEX/MOEXREPO/RUSFAR |
 | `finance_data/` | Финансовая отчётность, дивиденды, мультипликаторы (для ФА-стратегий) |
 | `ta_data/` | Кэш предрасчитанных технических индикаторов (EMA, RSI, MACD, OBV, VWAP, ATR) |
-| `results/` | CSV-результаты всех бэктестов и оптимизаций, на которые ссылается работа |
+| `results/` | CSV-результаты всех бэктестов и оптимизаций|
 
 ## Тикеры
 
@@ -57,7 +57,7 @@ export PYTHONPATH=$PWD/code      # Linux / macOS
 
 ### 1. Подготовка данных
 
-Если хочется загрузить котировки заново (иначе CSV уже лежат в `data/`):
+Pfuheprf OHLCV (CSV уже лежат в `data/`):
 
 ```bash
 python code/scripts/download_data.py            # все таймфреймы
@@ -100,15 +100,15 @@ python -m optimization.diffevolution_ta --type all --timeframe 1D --maxiter 30 -
 
 Результаты — `results/optimization_de/{type}_de_top5.csv` и `all_de_top5.csv`.
 
-**NSGA-II multi-objective для VF Strategy** (3 цели: Sharpe ↑, MaxDD ↓, std-Sharpe ↓):
+**NSGA-II multi-objective для VF Strategy** (3 цели: Sharpe max, MaxDD min, std-Sharpe min):
 
 ```bash
 python -m optimization.vf_optimizer_v2 SBER 1h --trials 400 --folds 3
 ```
 
-Результаты — `results/vf_strategy/{ТИКЕР}_v2_pareto_{ТФ}.csv` и интерактивный HTML-фронт.
+Результаты — `results/vf_strategy/{ТИКЕР}_v2_pareto_{ТФ}.csv`.
 
-**Полнопараметрический Bayesian с тёплым стартом от Pareto** (14 параметров VF):
+**Полнопараметрический Bayesian от Pareto** (14 параметров VF):
 
 ```bash
 python -m optimization.vf_bayesian SBER 1h --trials 500
@@ -169,7 +169,7 @@ results/
 └── vf_strategy/                      # VF Strategy: NSGA-II Pareto, fANOVA, full Bayesian, ансамбли
     ├── ALL_TICKERS_summary.csv       # сводная таблица VF по 10 тикерам
     ├── {ТИКЕР}_v2_pareto_{ТФ}.csv    # точки Pareto-фронта
-    ├── {ТИКЕР}_importance_{ТФ}.csv   # fANOVA важность параметров
+    ├── {ТИКЕР}_importance_{ТФ}.csv   # важность параметров
     ├── {ТИКЕР}_bayesian_full_{ТФ}.csv# полнопараметрический Bayesian
     └── {ТИКЕР}_ensemble_summary_{ТФ}.csv
 ```
@@ -212,7 +212,7 @@ code/
 ├── modules/                   # CAPM / Sharpe / Sortino / Treynor / Jensen и пр.
 ├── scripts/
 │   ├── download_data.py       # MOEX ISS API → data/
-│   └── build_riskfree.py      # сшивка MOEXREPO + RUSFAR
+│   └── build_riskfree.py      # MOEXREPO + RUSFAR
 └── pinescript/
     └── vf_strategy.pine       # TradingView-версия VF Strategy
 ```
