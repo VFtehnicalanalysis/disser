@@ -1,0 +1,127 @@
+
+
+strategy("VF strategy", overlay=true, max_lines_count = 500, max_labels_count = 500, default_qty_type=strategy.percent_of_equity, max_bars_back = 4000, default_qty_value = 10)
+
+useDateFilter = input.bool(false, title="Start date filter", group="Experimental")
+backtestStartDate = input.time(timestamp("1 Jan 2021"), title="Start date", group="Experimental")
+inTradeWindow = not useDateFilter or time >= backtestStartDate
+
+smartStop = input.float(defval = 5.0, title="Smart-stop (price + %)", group="Experimental")
+smartStopActivationLevel = input.float(defval = 10.0, title="Activation level (price + %)", group="Experimental")
+is_smartStopActivated = input.bool(defval = false, title="Activate smart-stop", group="Experimental")
+rsi_changer = input.int(0, "RSI trend adjustment", group="Experimental")
+is_rsi_changer = input.bool(defval = false, title="Enable RSI adjustment", group="Experimental")
+var sell_count = input.int(10, "Partial close %", group="Experimental")
+rsi_period = input.int(14, "RSI period", group="Experimental")
+var price_step = input.float(0.1, "Price step", group="Experimental")
+is_price_step = input.bool(defval = false, title="Enable price step", group="Experimental")
+
+rsi_low = input.int(30, "RSI min", group="RSI")
+rsi_high = input.int(70, "RSI max", group="RSI")
+pivot_period = input.int(defval = 3, title="Pivot period", minval = 1, maxval = 20, group="RSI")
+check_info = input.string(defval="BUY & SELL", options=["BUY", "SELL", "BUY & SELL"], title="Direction", group="RSI")
+
+is_using_macd = input.bool(defval = false, title="Use MACD", group="MACD")
+macd_fast = input.int(12, title="Fast MACD", group="MACD")
+macd_slow = input.int(26, title="Slow MACD", group="MACD")
+macd_signal = input.int(9, title="MACD smoothing", group="MACD")
+
+is_using_trend_analysis = input.bool(defval=true, title="Enable trend analysis", group="Trend")
+L_short_period = input.int(defval = 100, title="LTF short EMA", group="LTF EMA")
+L_long_period = input.int(defval = 200, title="LTF long EMA", group="LTF EMA")
+h_period = input.timeframe(defval = "1D", title="HTF timeframe", group="HTF EMA")
+H_short_period = input.int(defval = 100, title="HTF short EMA", group="HTF EMA")
+H_long_period = input.int(defval = 200, title="HTF long EMA", group="HTF EMA")
+
+is_using_stops = input.bool(defval=false, title="Standard stops", group="Risk")
+stop_l_percent = input.float(defval=3.0, title="STOP long %", group="Risk")
+stop_s_percent = input.float(defval=1.0, title="STOP short %", group="Risk")
+is_using_trailing_stop = input.bool(defval=false, title="Trailing stop", group="Risk")
+TRS_percent = input.float(3.0, "Trailing stop %", group="Risk")
+is_using_take_profits = input.bool(defval=false, title="Take profit", group="Risk")
+TP_l_percent = input.float(defval=6.0, title="TP long %", group="Risk")
+TP_s_percent = input.float(defval=3.0, title="TP short %", group="Risk")
+
+pivot_high = ta.pivothigh(close, pivot_period, pivot_period)  
+pivot_low = ta.pivotlow(close, pivot_period, pivot_period)    
+rsi = ta.rsi(close, rsi_period)
+[macdLine, signalLine, histLine] = ta.macd(close, macd_fast, macd_slow, macd_signal)
+
+[openHTF, highHTF, lowHTF, closeHTF, ema_HTF_short, ema_HTF_long] = request.security(syminfo.tickerid, h_period, [open, high, low, close, ta.ema(close, H_short_period), ta.ema(close, H_long_period)])
+ema_LTF_short = ta.ema(close, L_short_period)
+ema_LTF_long = ta.ema(close, L_long_period)
+
+var true_rsi_high = rsi_high
+var true_rsi_low = rsi_low
+if is_rsi_changer
+    if ema_HTF_short < ema_HTF_long
+        true_rsi_high := rsi_high - rsi_changer
+        true_rsi_low := rsi_low - rsi_changer
+    else
+        true_rsi_high := rsi_high + rsi_changer
+        true_rsi_low := rsi_low + rsi_changer
+
+long_trend_func() =>
+    trend_long = false
+    
+    if ema_HTF_short < ema_HTF_long and ema_LTF_short < ema_LTF_long
+        trend_long := true
+    
+    if ema_HTF_short > ema_HTF_long and ema_LTF_short < ema_LTF_long and ema_LTF_short > ema_HTF_short
+        trend_long := true
+    trend_long
+
+short_trend_func() =>
+    trend_short = false
+    
+    if ema_HTF_short > ema_HTF_long and ((ema_LTF_short < ema_HTF_short and close < ema_HTF_short) or ema_LTF_short > ema_LTF_long)
+        trend_short := true
+    trend_short
+
+diver_func(CLS) =>
+    
+    length_up = 0
+    for x=0 to 40 by 1
+        
+        
+        if pivot_high and pivot_high[x] < pivot_high and rsi[x+pivot_period] > rsi[pivot_period] and rsi[x+pivot_period] >= true_rsi_high and check_info!= "BUY"
+            length_up := x
+            
+            tg_a = (rsi[x]-rsi)/x              
+            tg_a_2 = (CLS[x+pivot_period] - CLS[pivot_period])/x  
+            tg_b = (macdLine[x]-macdLine)/x    
+            
+            for y=1 to length_up-1
+                slope_point = tg_a*y
+                slope_point_2 = tg_a_2*y
+                slope_point_macd = tg_b*y
+                if CLS[y+pivot_period]>CLS[pivot_period] + slope_point_2 or rsi[y+pivot_period] > rsi[pivot_period] + slope_point or (is_using_macd==false ? false : (macdLine[y+pivot_period] > macdLine[pivot_period] + slope_point_macd))
+                    length_up := 0  
+
+    
+    if pivot_high and length_up !=0 and (is_using_trend_analysis == false or short_trend_func())
+        if is_using_trend_analysis and ema_LTF_short < ema_HTF_short and ema_LTF_short < ema_LTF_long
+            strategy_func("SHORT")     
+        else
+            strategy_func("SELL")      
+
+    
+    length_down = 0
+    for x=0 to 40 by 1
+        
+        
+        if pivot_low and pivot_low[x] > pivot_low and rsi[x+pivot_period] < rsi[pivot_period] and rsi[x+pivot_period] <= true_rsi_low and check_info!= "SELL"
+            length_down := x
+            tg_a = (rsi-rsi[x])/x
+            tg_a_2 = (CLS[pivot_period]-CLS[x+pivot_period])/x
+            tg_b = (macdLine-macdLine[x])/x
+            for y=1 to length_down-1
+                slope_point = tg_a*y
+                slope_point_2 = tg_a_2*y
+                slope_point_macd = tg_b*y
+                if CLS[y+pivot_period] < CLS[pivot_period] - slope_point_2 or rsi[y+pivot_period] < rsi[pivot_period] - slope_point or (is_using_macd==false ? false : (macdLine[y+pivot_period] < macdLine[pivot_period] - slope_point_macd))
+                    length_down := 0  
+
+    
+    if pivot_low and length_down !=0 and (is_using_trend_analysis == false or long_trend_func())
+        strategy_func("BUY")

@@ -1,0 +1,16 @@
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parent
+DATA_DIR = PROJECT_ROOT / 'data'
+FINANCE_DATA_DIR = PROJECT_ROOT / 'finance_data'
+TA_DATA_DIR = PROJECT_ROOT / 'ta_data'
+RISKFREE_FILE = DATA_DIR / 'RISKFREE_data.csv'
+MARKET_FILE = DATA_DIR / 'IMOEX_data.csv'
+RESULTS_DIR = PROJECT_ROOT / 'results'
+PORTFOLIO_RESULTS_DIR = PROJECT_ROOT / 'portfolio_results'
+VF_DIR = RESULTS_DIR / 'vf_strategy'
+OPT_DIR = RESULTS_DIR / 'optimization'
+DE_OPT_DIR = RESULTS_DIR / 'optimization_de'
+WF_DIR = RESULTS_DIR / 'walkforward'
+CHARTS_DIR = RESULTS_DIR / 'charts'
+THESIS_REPORT = RESULTS_DIR / 'THESIS_CONSOLIDATED_REPORT.html'
+COMPARATIVE_REPORT = RESULTS_DIR / 'comparative_report.html'
